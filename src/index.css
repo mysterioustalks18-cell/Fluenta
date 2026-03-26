@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Syne:wght@700;800&family=Bebas+Neue&display=swap');
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne", sans-serif;
+  --font-heading: "Outfit", sans-serif;
+  --font-mono: "Bebas Neue", cursive;
+
+  --color-bg-deep: #080b14;
+  --color-bg-surface: #0e1220;
+  --color-bg-raised: #141928;
+  --color-primary: #ff6b35;
+  --color-primary-glow: rgba(255, 107, 53, 0.25);
+  --color-gold: #ffd166;
+  --color-gold-glow: rgba(255, 209, 102, 0.2);
+  --color-emerald: #00d68f;
+  --color-sapphire: #4da6ff;
+  --color-ruby: #ff4757;
+  --color-violet: #a855f7;
+  --color-text-bright: #f0f4ff;
+  --color-text-mid: #8892b0;
+  --color-text-dim: #4a5568;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-glass: rgba(255, 255, 255, 0.04);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-deep text-text-bright font-sans selection:bg-primary selection:text-white;
+    cursor: none;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-glass backdrop-blur-xl border border-border;
+  }
+  
+  .neon-glow-primary {
+    box-shadow: 0 0 20px var(--color-primary-glow);
+  }
+
+  .neon-glow-gold {
+    box-shadow: 0 0 20px var(--color-gold-glow);
+  }
+
+  .neon-glow-emerald {
+    box-shadow: 0 0 20px rgba(0, 214, 143, 0.15);
+  }
+
+  .mesh-gradient {
+    background: radial-gradient(at 0% 0%, rgba(255, 107, 53, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 214, 143, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(77, 166, 255, 0.08) 0px, transparent 50%);
+    background-size: 150% 150%;
+    animation: mesh 30s ease-in-out infinite alternate;
+    filter: saturate(1.2);
+  }
+
+  @keyframes mesh {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 50% 0%; }
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .flame-flicker {
+    animation: flicker 0.5s infinite alternate;
+  }
+
+  .clip-path-hexagon {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0.8; transform: scale(1); filter: drop-shadow(0 0 2px #ff6b35); }
+    100% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 8px #ff6b35); }
+  }
+}

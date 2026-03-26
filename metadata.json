@@ -1,0 +1,5 @@
+{
+  "name": "Fluenta",
+  "description": "An AI-powered English learning app with a premium game-like experience.",
+  "requestFramePermissions": ["microphone"]
+}

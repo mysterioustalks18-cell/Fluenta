@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId} (matches request.auth.uid)
+    // Fields:
+    //   - uid: string (required) - User's unique ID
+    //   - name: string (required) - User's full name
+    //   - email: string (required, email format) - User's email
+    //   - xp: number (optional) - Experience points
+    //   - streak: number (optional) - Daily streak count
+    //   - completedLessons: list (optional) - Array of lesson titles
+    //   - downloadedLessons: list (optional) - Array of lesson titles
+    //   - onboardingData: map (optional) - Onboarding responses
+    //   - createdAt: timestamp (optional) - Creation time
+    //   - lastActive: timestamp (optional) - Last activity time
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidUser(data) {
+      return hasRequiredFields(['uid', 'name', 'email']) &&
+             data.uid is string && data.uid == request.auth.uid &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             isValidEmail(data.email) &&
+             (!('xp' in data) || data.xp is number) &&
+             (!('streak' in data) || data.streak is number) &&
+             (!('completedLessons' in data) || data.completedLessons is list) &&
+             (!('downloadedLessons' in data) || data.downloadedLessons is list) &&
+             (!('onboardingData' in data) || data.onboardingData is map);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      // Users can only read their own profile
+      allow read: if isOwner(userId);
+      
+      // Users can only create their own profile with valid data
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      
+      // Users can only update their own profile with valid data
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+      
+      // Users cannot delete their own profile (for safety)
+      allow delete: if false;
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

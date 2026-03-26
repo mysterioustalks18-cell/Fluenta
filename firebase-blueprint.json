@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and progress data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique user ID" },
+        "name": { "type": "string", "description": "User's full name" },
+        "email": { "type": "string", "format": "email", "description": "User's email address" },
+        "xp": { "type": "integer", "description": "Total experience points" },
+        "streak": { "type": "integer", "description": "Current daily streak" },
+        "completedLessons": { "type": "array", "items": { "type": "string" }, "description": "List of completed lesson titles" },
+        "downloadedLessons": { "type": "array", "items": { "type": "string" }, "description": "List of downloaded lesson titles" },
+        "onboardingData": { "type": "object", "description": "Data from onboarding process" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" },
+        "lastActive": { "type": "string", "format": "date-time", "description": "Last activity timestamp" }
+      },
+      "required": ["uid", "name", "email"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User documents containing profile and progress"
+    }
+  }
+}
